@@ -1,10 +1,5 @@
-def find_min(a,b,c,d):
-    print(min(a,b,c,d),end="")
-def main():
-    a=int(input())
-    b=int(input())
-    c=int(input())
-    d=int(input())
-    find_min(a,b,c,d)
-if __name__ == "__main__":
-    main()
+import math
+def f(a,b,c,d):
+    return min(min(a,b), min(c,d))
+a, b, c, d = input().split()
+print(f(a,b,c,d))
