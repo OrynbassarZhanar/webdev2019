@@ -2,7 +2,8 @@ export interface TaskList{
     id:number;
     name:string;
 }
-export interface Tasks{
+export interface Task{
+  task_list: any;
     id: number;
     name:string;
     created_at: Date;

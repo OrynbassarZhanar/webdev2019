@@ -1,18 +1,15 @@
 from rest_framework import serializers
-from api.models import TaskList,Task
-from datetime import datetime
+from api.models import TaskList, Task
+from api import models
 
-
-class TasklistSerializer(serializers.Serializer):
+class TaskListSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(required=True)
+    name = serializers.CharField(max_length=200)
 
     def create(self, validated_data):
-        # {'name': 'new category 3'}
-        # name='new category 3'
-        category = TaskList(**validated_data)
-        category.save()
-        return category
+        task_list = TaskList(**validated_data)
+        task_list.save()
+        return task_list
 
     def update(self, instance, validated_data):
         instance.name = validated_data.get('name', instance.name)
@@ -20,20 +17,22 @@ class TasklistSerializer(serializers.Serializer):
         return instance
 
 
-class TasklistSerializer2(serializers.ModelSerializer):
+class TaskSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField()
+    task_list = TaskListSerializer(required=False)
 
     class Meta:
-        model = TaskList
-        fields = ('id', 'name')
-        # fields = '__all__'
+        model = Task
+        fields = '__all__'
 
+    def create(self, validated_data):
+        return Task.objects.create(**validated_data)
 
-class TaskSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    name = serializers.CharField(required=True)
-    #created_at = serializers.DatetimeField()
-    #due_on = serializers.DatetimeField()
-    status=serializers.CharField()
-    tasklist=TasklistSerializer2()
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.created_at = validated_data.get('created_at', instance.created_at)
+        instance.due_on = validated_data.get('due_on', instance.due_on)
+        instance.status = validated_data.get('status', instance.status)
+        instance.task_list = validated_data.get('task_list', instance.task_list)
+        instance.save()
+        return instance
